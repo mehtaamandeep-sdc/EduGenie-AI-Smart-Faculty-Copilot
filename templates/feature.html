@@ -1,0 +1,463 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }} - EduGenie AI{% endblock %}
+
+{% block content %}
+<div class="feature-page py-5">
+    <div class="container">
+        <!-- Page Header -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{{ url_for('dashboard') }}">Dashboard</a></li>
+                        <li class="breadcrumb-item active">{{ title }}</li>
+                    </ol>
+                </nav>
+                <h1 class="display-6 fw-bold mb-2">{{ title }}</h1>
+                <p class="text-muted">Fill in the details below to generate your content using AI</p>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Input Form Column -->
+            <div class="col-lg-5 mb-4">
+                <div class="card border-0 shadow-sm sticky-top" style="top: 100px;">
+                    <div class="card-header bg-primary text-white py-3">
+                        <h5 class="mb-0">
+                            <i class="bi bi-pencil-square me-2"></i>
+                            Input Details
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <form id="generateForm">
+                            <input type="hidden" id="featureType" value="{{ feature_type }}">
+                            
+                            <!-- Dynamic form fields based on feature type -->
+                            <div id="formFields">
+                                {% if feature_type == 'lesson_plan' %}
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Subject Name *</label>
+                                        <input type="text" class="form-control" name="subject" required placeholder="e.g., Database Management Systems">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Course Code</label>
+                                        <input type="text" class="form-control" name="course_code" placeholder="e.g., CS301">
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label fw-semibold">Semester</label>
+                                            <input type="text" class="form-control" name="semester" placeholder="e.g., 5th Semester">
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label fw-semibold">Credits</label>
+                                            <input type="text" class="form-control" name="credits" placeholder="e.g., 4">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Teaching Hours/Week</label>
+                                        <input type="text" class="form-control" name="hours" placeholder="e.g., 4 hours">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Topic/Unit *</label>
+                                        <input type="text" class="form-control" name="topic" required placeholder="e.g., SQL and Relational Algebra">
+                                    </div>
+
+                                {% elif feature_type == 'question_paper' %}
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Subject Name *</label>
+                                        <input type="text" class="form-control" name="subject" required placeholder="e.g., Data Structures">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Course Code</label>
+                                        <input type="text" class="form-control" name="course_code" placeholder="e.g., CS201">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Semester</label>
+                                        <input type="text" class="form-control" name="semester" placeholder="e.g., 3rd Semester">
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label fw-semibold">Total Marks</label>
+                                            <input type="number" class="form-control" name="marks" placeholder="100">
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label fw-semibold">Duration (hours)</label>
+                                            <input type="number" class="form-control" name="duration" placeholder="3">
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Exam Type</label>
+                                        <select class="form-select" name="exam_type">
+                                            <option value="End Semester">End Semester</option>
+                                            <option value="Mid Semester">Mid Semester</option>
+                                            <option value="Internal Assessment">Internal Assessment</option>
+                                        </select>
+                                    </div>
+
+                                {% elif feature_type == 'assignment' %}
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Subject Name *</label>
+                                        <input type="text" class="form-control" name="subject" required placeholder="e.g., Operating Systems">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Topic *</label>
+                                        <input type="text" class="form-control" name="topic" required placeholder="e.g., Process Scheduling Algorithms">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Semester</label>
+                                        <input type="text" class="form-control" name="semester" placeholder="e.g., 4th Semester">
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label fw-semibold">Marks</label>
+                                            <input type="number" class="form-control" name="marks" placeholder="20">
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label fw-semibold">Deadline</label>
+                                            <input type="text" class="form-control" name="deadline" placeholder="2 weeks">
+                                        </div>
+                                    </div>
+
+                                {% elif feature_type == 'course_outcomes' %}
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Subject Name *</label>
+                                        <input type="text" class="form-control" name="subject" required placeholder="e.g., Machine Learning">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Course Code</label>
+                                        <input type="text" class="form-control" name="course_code" placeholder="e.g., CS401">
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label fw-semibold">Semester</label>
+                                            <input type="text" class="form-control" name="semester" placeholder="e.g., 7th Semester">
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label fw-semibold">Credits</label>
+                                            <input type="text" class="form-control" name="credits" placeholder="e.g., 4">
+                                        </div>
+                                    </div>
+
+                                {% elif feature_type == 'rubric' %}
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Assessment Type *</label>
+                                        <select class="form-select" name="assessment_type" required>
+                                            <option value="">Select Type</option>
+                                            <option value="Assignment">Assignment</option>
+                                            <option value="Project">Project</option>
+                                            <option value="Presentation">Presentation</option>
+                                            <option value="Lab Work">Lab Work</option>
+                                            <option value="Report">Report</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Subject</label>
+                                        <input type="text" class="form-control" name="subject" placeholder="e.g., Software Engineering">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Total Marks</label>
+                                        <input type="number" class="form-control" name="marks" placeholder="20">
+                                    </div>
+
+                                {% elif feature_type == 'meeting_minutes' %}
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Meeting Type *</label>
+                                        <input type="text" class="form-control" name="meeting_type" required placeholder="e.g., Department Meeting">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Date</label>
+                                        <input type="date" class="form-control" name="date">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Time</label>
+                                        <input type="time" class="form-control" name="time">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Venue</label>
+                                        <input type="text" class="form-control" name="venue" placeholder="e.g., Conference Room">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Attendees</label>
+                                        <textarea class="form-control" name="attendees" rows="2" placeholder="List of attendees"></textarea>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Agenda *</label>
+                                        <textarea class="form-control" name="agenda" rows="3" required placeholder="Meeting agenda items"></textarea>
+                                    </div>
+
+                                {% elif feature_type == 'notice' %}
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Document Type *</label>
+                                        <select class="form-select" name="doc_type" required>
+                                            <option value="Notice">Notice</option>
+                                            <option value="Circular">Circular</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Subject *</label>
+                                        <input type="text" class="form-control" name="subject" required placeholder="e.g., Examination Schedule">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Target Audience</label>
+                                        <input type="text" class="form-control" name="audience" placeholder="e.g., All Students">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Details *</label>
+                                        <textarea class="form-control" name="details" rows="4" required placeholder="Main content of the notice"></textarea>
+                                    </div>
+
+                                {% elif feature_type == 'email' %}
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Recipient *</label>
+                                        <input type="text" class="form-control" name="recipient" required placeholder="e.g., Dr. John Smith">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Subject *</label>
+                                        <input type="text" class="form-control" name="subject" required placeholder="Email subject">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Purpose *</label>
+                                        <input type="text" class="form-control" name="purpose" required placeholder="e.g., Request for collaboration">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Key Points *</label>
+                                        <textarea class="form-control" name="details" rows="4" required placeholder="Main points to include in the email"></textarea>
+                                    </div>
+
+                                {% elif feature_type == 'event_report' %}
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Event Type *</label>
+                                        <select class="form-select" name="event_type" required>
+                                            <option value="">Select Type</option>
+                                            <option value="Workshop">Workshop</option>
+                                            <option value="Seminar">Seminar</option>
+                                            <option value="Conference">Conference</option>
+                                            <option value="Guest Lecture">Guest Lecture</option>
+                                            <option value="Technical Event">Technical Event</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Event Name *</label>
+                                        <input type="text" class="form-control" name="event_name" required placeholder="e.g., AI & ML Workshop">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Date</label>
+                                        <input type="date" class="form-control" name="date">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Organizer</label>
+                                        <input type="text" class="form-control" name="organizer" placeholder="Department/Organization">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Event Details *</label>
+                                        <textarea class="form-control" name="details" rows="4" required placeholder="Describe the event, speakers, topics covered, etc."></textarea>
+                                    </div>
+
+                                {% elif feature_type == 'blooms_taxonomy' %}
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Topic/Subject</label>
+                                        <input type="text" class="form-control" name="topic" placeholder="e.g., Data Structures">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Specific Level (Optional)</label>
+                                        <select class="form-select" name="level">
+                                            <option value="All levels">All levels</option>
+                                            <option value="Remember">Remember</option>
+                                            <option value="Understand">Understand</option>
+                                            <option value="Apply">Apply</option>
+                                            <option value="Analyze">Analyze</option>
+                                            <option value="Evaluate">Evaluate</option>
+                                            <option value="Create">Create</option>
+                                        </select>
+                                    </div>
+
+                                {% elif feature_type == 'project_ideas' %}
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Domain *</label>
+                                        <input type="text" class="form-control" name="domain" required placeholder="e.g., Web Development, AI/ML, IoT">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Student Level</label>
+                                        <select class="form-select" name="level">
+                                            <option value="Undergraduate">Undergraduate</option>
+                                            <option value="Postgraduate">Postgraduate</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Semester</label>
+                                        <input type="text" class="form-control" name="semester" placeholder="e.g., 6th Semester">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Team Size</label>
+                                        <input type="text" class="form-control" name="team_size" placeholder="e.g., 3-4 students">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Duration</label>
+                                        <input type="text" class="form-control" name="duration" placeholder="e.g., One semester">
+                                    </div>
+
+                                {% elif feature_type == 'career_guidance' %}
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Field of Study *</label>
+                                        <input type="text" class="form-control" name="field" required placeholder="e.g., Computer Science">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Current Level</label>
+                                        <select class="form-select" name="level">
+                                            <option value="Undergraduate">Undergraduate</option>
+                                            <option value="Postgraduate">Postgraduate</option>
+                                            <option value="Final Year">Final Year</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Areas of Interest</label>
+                                        <input type="text" class="form-control" name="interests" placeholder="e.g., AI, Cloud Computing, Cybersecurity">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Career Goals</label>
+                                        <textarea class="form-control" name="goals" rows="3" placeholder="What are the student's career aspirations?"></textarea>
+                                    </div>
+
+                                {% elif feature_type == 'chat' %}
+                                    <div class="mb-3">
+                                        <label class="form-label fw-semibold">Your Message *</label>
+                                        <textarea class="form-control" name="message" rows="5" required placeholder="Ask me anything about teaching, curriculum, assessments, or academic matters..."></textarea>
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <button type="submit" class="btn btn-primary w-100 py-3">
+                                <i class="bi bi-stars me-2"></i>
+                                Generate with AI
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Output Column -->
+            <div class="col-lg-7">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-header bg-success text-white py-3">
+                        <h5 class="mb-0">
+                            <i class="bi bi-file-earmark-text me-2"></i>
+                            Generated Content
+                        </h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div id="outputArea">
+                            <div class="text-center text-muted py-5">
+                                <i class="bi bi-file-earmark-text fs-1 mb-3 d-block"></i>
+                                <p class="mb-0">Your generated content will appear here</p>
+                                <small>Fill the form and click "Generate with AI"</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-white border-top" id="actionButtons" style="display: none;">
+                        <div class="d-flex gap-2 flex-wrap">
+                            <button class="btn btn-outline-primary" onclick="copyContent()">
+                                <i class="bi bi-clipboard me-2"></i>Copy
+                            </button>
+                            <button class="btn btn-outline-success" onclick="downloadContent()">
+                                <i class="bi bi-download me-2"></i>Download
+                            </button>
+                            <button class="btn btn-outline-info" onclick="printContent()">
+                                <i class="bi bi-printer me-2"></i>Print
+                            </button>
+                            <button class="btn btn-outline-secondary" onclick="clearContent()">
+                                <i class="bi bi-x-circle me-2"></i>Clear
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let generatedContent = '';
+
+document.getElementById('generateForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const formData = new FormData(e.target);
+    const data = Object.fromEntries(formData.entries());
+    data.feature_type = document.getElementById('featureType').value;
+    
+    // Show loading
+    showLoading();
+    
+    try {
+        const response = await fetch('/api/generate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        });
+        
+        const result = await response.json();
+        
+        hideLoading();
+        
+        if (result.success) {
+            generatedContent = result.content;
+            displayContent(result.content);
+            showToast('Content generated successfully!', 'success');
+        } else {
+            showToast('Error: ' + result.error, 'error');
+        }
+    } catch (error) {
+        hideLoading();
+        showToast('Error generating content: ' + error.message, 'error');
+    }
+});
+
+function displayContent(content) {
+    const outputArea = document.getElementById('outputArea');
+    outputArea.innerHTML = `<div class="generated-content">${content.replace(/\n/g, '<br>')}</div>`;
+    document.getElementById('actionButtons').style.display = 'block';
+}
+
+function copyContent() {
+    navigator.clipboard.writeText(generatedContent).then(() => {
+        showToast('Content copied to clipboard!', 'success');
+    });
+}
+
+function downloadContent() {
+    const blob = new Blob([generatedContent], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'edugenie-' + Date.now() + '.txt';
+    a.click();
+    showToast('Content downloaded!', 'success');
+}
+
+function printContent() {
+    const printWindow = window.open('', '', 'height=600,width=800');
+    printWindow.document.write('<html><head><title>Print</title>');
+    printWindow.document.write('<style>body{font-family:Arial,sans-serif;padding:20px;}</style>');
+    printWindow.document.write('</head><body>');
+    printWindow.document.write('<pre>' + generatedContent + '</pre>');
+    printWindow.document.write('</body></html>');
+    printWindow.document.close();
+    printWindow.print();
+}
+
+function clearContent() {
+    document.getElementById('outputArea').innerHTML = `
+        <div class="text-center text-muted py-5">
+            <i class="bi bi-file-earmark-text fs-1 mb-3 d-block"></i>
+            <p class="mb-0">Your generated content will appear here</p>
+            <small>Fill the form and click "Generate with AI"</small>
+        </div>
+    `;
+    document.getElementById('actionButtons').style.display = 'none';
+    generatedContent = '';
+}
+</script>
+{% endblock %}

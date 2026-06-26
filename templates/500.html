@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}500 - Server Error - EduGenie AI{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row min-vh-100 align-items-center justify-content-center">
+        <div class="col-md-6 text-center">
+            <div class="error-page">
+                <div class="mb-4">
+                    <i class="bi bi-exclamation-octagon text-danger" style="font-size: 6rem;"></i>
+                </div>
+                <h1 class="display-1 fw-bold text-danger">500</h1>
+                <h2 class="mb-3">Internal Server Error</h2>
+                <p class="lead text-muted mb-4">
+                    Something went wrong on our end. We're working to fix it!
+                </p>
+                <div class="alert alert-info text-start mb-4">
+                    <h6 class="alert-heading">
+                        <i class="bi bi-info-circle me-2"></i>
+                        Possible Solutions:
+                    </h6>
+                    <ul class="mb-0">
+                        <li>Check your IBM Cloud API credentials in the .env file</li>
+                        <li>Ensure your Watsonx.ai project is active</li>
+                        <li>Verify your internet connection</li>
+                        <li>Try refreshing the page</li>
+                    </ul>
+                </div>
+                <div class="d-flex gap-3 justify-content-center">
+                    <a href="{{ url_for('index') }}" class="btn btn-primary">
+                        <i class="bi bi-house-fill me-2"></i>
+                        Go Home
+                    </a>
+                    <a href="javascript:location.reload()" class="btn btn-outline-primary">
+                        <i class="bi bi-arrow-clockwise me-2"></i>
+                        Retry
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
